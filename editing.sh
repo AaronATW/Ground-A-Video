@@ -4,6 +4,8 @@
 #SBATCH --cpus-per-task 10
 #SBATCH --gres=gpu
 
+conda activate groundvideo
+
 # Run your code here
 srun python main.py --config video_configs/rabbit_watermelon.yaml --folder outputs/rabbit_watermelon
 srun python main.py --config video_configs/swan.yaml --folder outputs/swan

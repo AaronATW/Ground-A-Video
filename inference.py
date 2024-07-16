@@ -19,7 +19,7 @@ from diffusers import DDIMScheduler
 from ldm.models.diffusion.ddim import DDIMSampler
 from ldm.util import instantiate_from_config
 from controlnet.controlnet_3d import ControlNetModel3D
-from controlnet.utils import prepare_depth, prepare_optical_flow, prepare_magnitude_map
+from controlnet.utils import prepare_depth, prepare_optical_flow, prepare_magnitude_map, prepare_dino, prepare_depth_dino
 from null_inv import NullInversion
 
 
@@ -365,7 +365,9 @@ def run(meta, config, starting_noise=None):
              for file in sorted(os.listdir(meta["input_images_path"]))
         ]
         conditions_save_dir = f"{args.folder}/input_conditions"
+        # depth_maps = prepare_dino(input_image, accelerator.device, weight_dtype, save_dir=f"{conditions_save_dir}/dino_maps")
         depth_maps = prepare_depth(input_image, accelerator.device, weight_dtype, save_dir=f"{conditions_save_dir}/depth_maps")
+        # depth_maps = prepare_depth_dino(input_image, accelerator.device, weight_dtype, save_dir_depth=f"{conditions_save_dir}/depth_maps", save_dir_dino=f"{conditions_save_dir}/dino_maps")
         optical_flows = prepare_optical_flow(meta["input_images_path"], accelerator.device, save_dir=f"{conditions_save_dir}/optical_flow")
 
         # x_0 -> z_0

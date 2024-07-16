@@ -3,6 +3,7 @@ from tqdm import tqdm
 from einops import rearrange
 import numpy as np
 import cv2
+import glob
 import PIL
 from PIL import Image
 from diffusers.utils import PIL_INTERPOLATION
@@ -12,6 +13,7 @@ import torchvision.transforms.functional as F
 from torchvision.io import read_video, read_image, ImageReadMode, write_jpeg
 from torchvision.models.optical_flow import Raft_Large_Weights, raft_large
 from torchvision.utils import flow_to_image
+import torchvision.transforms as transforms
 
 from annotator.zoe import ZoeDetector
 from annotator.util import HWC3
@@ -116,6 +118,26 @@ def prepare_depth(input_images, device, dtype, save_dir=None):
 
     return outs
 
+def prepare_dino(input_images, device, dtype, save_dir=None):
+    if save_dir is not None and os.path.exists(save_dir):
+        image_files = sorted(glob.glob(os.path.join(save_dir, '*.jpg')))
+        transform = transforms.Compose([
+            transforms.Resize((512, 512)),
+            transforms.ToTensor(),
+            transforms.ConvertImageDtype(dtype)
+        ])
+        images = [transform(Image.open(file).convert('RGB')).unsqueeze(0).to(device) for file in image_files]
+        outs = prepare_cond(images, device, dtype)
+        return outs
+    
+def prepare_depth_dino(input_images, device, dtype, save_dir_depth=None, save_dir_dino=None):
+    if save_dir_depth is not None and os.path.exists(save_dir_depth) and save_dir_dino is not None and os.path.exists(save_dir_dino):
+        outs_depth = prepare_depth(input_images, device, dtype, save_dir_depth)
+        outs_dino = prepare_dino(input_images, device, dtype, save_dir_dino)
+        mixing_alpha = 0.97
+        assert outs_depth.shape == outs_dino.shape, "The shapes of outs_depth and outs_dino must be the same to mix them."
+        outs_mixed = (outs_depth ** mixing_alpha) * (outs_dino ** (1 - mixing_alpha))
+        return outs_mixed
 
 def prepare_cond(
     images, device, dtype, width=512, height=512, batch_size=1, num_images_per_prompt=1, do_classifier_free_guidance=False

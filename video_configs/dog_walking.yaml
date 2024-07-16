@@ -1,16 +1,16 @@
 ckpt: "gligen-inpainting-text-box/diffusion_pytorch_model.bin"
 input_images_path: "video_images/dog_walking"
-prompt: "Iron Man is walking a sheep on the lake"
+prompt: "a man is walking a sheep on the road"
 source_prompt: "a man is walking a dog on the road"
 phrases:
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
-  - ['sheep', 'Iron Man', 'lake']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
+  - ['sheep', 'man', 'road']
 locations: # [ [location of sheep], [location of man], [location of lake] ] x num_frames
   - [ [0.29, 0.55, 0.66, 0.88], [0.68, 0.13, 0.93, 0.78], [0.00, 0.60, 1.00, 1.00]]
   - [ [0.27, 0.55, 0.64, 0.89], [0.65, 0.13, 0.91, 0.78], [0.00, 0.60, 1.00, 1.00]]
